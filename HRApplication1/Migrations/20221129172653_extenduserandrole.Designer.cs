@@ -4,6 +4,7 @@ using HRApplication1.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRApplication1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221129172653_extenduserandrole")]
+    partial class extenduserandrole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,23 +66,22 @@ namespace HRApplication1.Migrations
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DepartmentId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -145,7 +146,7 @@ namespace HRApplication1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -256,7 +257,7 @@ namespace HRApplication1.Migrations
 
             modelBuilder.Entity("HRApplication1.Entity.ApplicationRole", b =>
                 {
-                    b.OwnsOne("HRApplication1.Entity.ApplicationRole.AuditEntity#HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
+                    b.OwnsOne("HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
                         {
                             b1.Property<string>("ApplicationRoleId")
                                 .HasColumnType("nvarchar(450)");
@@ -272,6 +273,11 @@ namespace HRApplication1.Migrations
                                 .HasColumnType("datetime2");
 
                             b1.Property<string>("ModifiedBy")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<int>("Status")
@@ -279,7 +285,7 @@ namespace HRApplication1.Migrations
 
                             b1.HasKey("ApplicationRoleId");
 
-                            b1.ToTable("AspNetRoles", (string)null);
+                            b1.ToTable("AspNetRoles");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationRoleId");
@@ -293,9 +299,11 @@ namespace HRApplication1.Migrations
                 {
                     b.HasOne("HRApplication1.Entity.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.OwnsOne("HRApplication1.Entity.ApplicationUser.AuditEntity#HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
+                    b.OwnsOne("HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
                                 .HasColumnType("nvarchar(450)");
@@ -311,6 +319,11 @@ namespace HRApplication1.Migrations
                                 .HasColumnType("datetime2");
 
                             b1.Property<string>("ModifiedBy")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<int>("Status")
@@ -318,7 +331,7 @@ namespace HRApplication1.Migrations
 
                             b1.HasKey("ApplicationUserId");
 
-                            b1.ToTable("AspNetUsers", (string)null);
+                            b1.ToTable("AspNetUsers");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationUserId");
@@ -332,7 +345,7 @@ namespace HRApplication1.Migrations
 
             modelBuilder.Entity("HRApplication1.Entity.Department", b =>
                 {
-                    b.OwnsOne("HRApplication1.Entity.Department.AuditEntity#HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
+                    b.OwnsOne("HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
                         {
                             b1.Property<int>("DepartmentId")
                                 .HasColumnType("int");
@@ -348,6 +361,11 @@ namespace HRApplication1.Migrations
                                 .HasColumnType("datetime2");
 
                             b1.Property<string>("ModifiedBy")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<int>("Status")
@@ -355,7 +373,7 @@ namespace HRApplication1.Migrations
 
                             b1.HasKey("DepartmentId");
 
-                            b1.ToTable("Departments", (string)null);
+                            b1.ToTable("Departments");
 
                             b1.WithOwner()
                                 .HasForeignKey("DepartmentId");
