@@ -4,6 +4,7 @@ using HRApplication1.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRApplication1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221130182748_DepartId")]
+    partial class DepartId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,7 +147,7 @@ namespace HRApplication1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -256,7 +258,7 @@ namespace HRApplication1.Migrations
 
             modelBuilder.Entity("HRApplication1.Entity.ApplicationRole", b =>
                 {
-                    b.OwnsOne("HRApplication1.Entity.ApplicationRole.AuditEntity#HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
+                    b.OwnsOne("HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
                         {
                             b1.Property<string>("ApplicationRoleId")
                                 .HasColumnType("nvarchar(450)");
@@ -279,7 +281,7 @@ namespace HRApplication1.Migrations
 
                             b1.HasKey("ApplicationRoleId");
 
-                            b1.ToTable("AspNetRoles", (string)null);
+                            b1.ToTable("AspNetRoles");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationRoleId");
@@ -295,7 +297,7 @@ namespace HRApplication1.Migrations
                         .WithMany()
                         .HasForeignKey("DepartmentId");
 
-                    b.OwnsOne("HRApplication1.Entity.ApplicationUser.AuditEntity#HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
+                    b.OwnsOne("HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
                                 .HasColumnType("nvarchar(450)");
@@ -318,7 +320,7 @@ namespace HRApplication1.Migrations
 
                             b1.HasKey("ApplicationUserId");
 
-                            b1.ToTable("AspNetUsers", (string)null);
+                            b1.ToTable("AspNetUsers");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationUserId");
@@ -332,7 +334,7 @@ namespace HRApplication1.Migrations
 
             modelBuilder.Entity("HRApplication1.Entity.Department", b =>
                 {
-                    b.OwnsOne("HRApplication1.Entity.Department.AuditEntity#HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
+                    b.OwnsOne("HRApplication1.Auth.AuditEntity", "AuditEntity", b1 =>
                         {
                             b1.Property<int>("DepartmentId")
                                 .HasColumnType("int");
@@ -355,7 +357,7 @@ namespace HRApplication1.Migrations
 
                             b1.HasKey("DepartmentId");
 
-                            b1.ToTable("Departments", (string)null);
+                            b1.ToTable("Departments");
 
                             b1.WithOwner()
                                 .HasForeignKey("DepartmentId");
