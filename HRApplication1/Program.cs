@@ -19,11 +19,12 @@ builder.Services.AddDbContext<HRApplication1.Auth.ApplicationDbContext>(options 
 builder.Services.AddSwaggerGen();
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedAccount = true;
     // options.Lockout.
 })
          .AddEntityFrameworkStores<ApplicationDbContext>()
          .AddDefaultTokenProviders();
+         
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -39,8 +40,6 @@ builder.Services.AddAuthentication(options =>
                     ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-
-
 
                 };
             });

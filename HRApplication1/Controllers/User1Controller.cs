@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using System.Web;
 
 namespace HRApplication1.Controllers
 {
@@ -44,8 +47,6 @@ namespace HRApplication1.Controllers
                 {
                     return NoContent();
                 }
-
-
 
                 return Ok(findUsers);
 
@@ -94,6 +95,7 @@ namespace HRApplication1.Controllers
                     Email = createUser.EmailAddress,
                     UserName = createUser.EmailAddress,
                     PasswordHash = createUser.Password,
+                    EmailConfirmed=true,
 
                     AuditEntity = new AuditEntity
                     {
@@ -113,9 +115,8 @@ namespace HRApplication1.Controllers
 
 
                     if (result.Succeeded) return Ok("User has been created");
-                    else return BadRequest("");
+                    else return BadRequest(result.Errors.Select(x=> x.Description));
                 }
-
 
                 return Ok("User already exist");
 
@@ -131,12 +132,15 @@ namespace HRApplication1.Controllers
         {
             try
             {
+                string newToken = HttpUtility.UrlDecode(token);
                var findUser= await _userManager.FindByEmailAsync(email);
                 if (findUser == null)
                     return NotFound(); 
                 else
+
                 {
-                    IdentityResult? res = await _userManager.ResetPasswordAsync(findUser, token, newPassword);
+                
+                    IdentityResult? res = await _userManager.ResetPasswordAsync(findUser, newToken, newPassword);
                     if (res.Succeeded)
                         return Ok("Password updated");
                     else

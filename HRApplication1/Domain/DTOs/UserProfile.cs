@@ -8,6 +8,7 @@ namespace HRApplication1.Domain.DTOs
         public UserProfile()
         {
             CreateMap<CreateDepartmentDTO, Department>();
+            CreateMap<ApplicationUser, CreateUserDTO>();
            // CreateMap<CreateRoleDTO, Role>();
            // CreateMap<CreateUserDTO, User>();
             //CreateMap<CreateDepartmentDTO, Department>();

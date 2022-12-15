@@ -18,20 +18,26 @@ namespace HRApplication1.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<DepartmentController> _logger;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DepartmentController(ApplicationDbContext context, IMapper mapper, ILogger<DepartmentController> logger, RoleManager<ApplicationRole> roleManager)
+        public DepartmentController(ApplicationDbContext context, IMapper mapper, ILogger<DepartmentController> logger, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
             _roleManager = roleManager;
+            _userManager = userManager;
         }
         //POST: api/Department
         [HttpPost("createdepartment")]
-        public async Task<ActionResult> CreateDepartment(string  DepartmentName)
+        public async Task<ActionResult> CreateDepartment(string DepartmentName)
         {
             try
             {
+               var res= _context.Departments.Where(d=> d.DepartmentName.ToLower().Trim()==DepartmentName.ToLower().Trim()).ToList();
+                if (res.Count > 0)
+                    return BadRequest("Department already exist");
+                
                 var newDept = new Department
                 {
                     DepartmentName = DepartmentName,
@@ -54,28 +60,40 @@ namespace HRApplication1.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        //GET: api/Staff/Department
-        //[HttpGet("getstaffbydepartment/{id}")]
-       // await _context.Users.Where(x => x.DepartmentId == id).TolistAsycn()
-        //public async Task<Result> GetStaffByDepartment(int id)
-        //{
-        //    try
-        //    {
-        //        var findStaff = await _context.s.Include(x => x.Department).Where(q => q.Department.Id == id).FirstOrDefaultAsync();
-        //        if (findStaff == null)
-        //        {
-        //            return Result.Failure($"Staff with Id {id} not found");
-        //        }
-        //        else
-        //        {
-        //            return Result.Success("suceeded", findStaff);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Result.Failure(ex.Message);
-        //    }
-        //}
+
+        [HttpGet("getUsersByDepartment/{id}")]
+        public async Task<ActionResult> GetUsersByDepartment(int id)
+        {
+            try
+            {
+                var res = await _context.Departments.FindAsync(id);
+                if (res == null)
+                    return NotFound("Department not found");
+                else
+                {
+                    var findUsers = await _userManager.Users.Where(s => s.DepartmentId == id).ToListAsync();
+                    var UserDTOList= new List<CreateUserDTO>();
+                    foreach (var user in findUsers)
+                    {
+                        UserDTOList.Add(new CreateUserDTO
+                        {
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            DOB = user.DOB
+                        });
+                    }
+                    return Ok(UserDTOList);
+                }
+                   
+                    
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500,"An error occurred");
+            }
+        }
+        
         //GET: api/Department
         [HttpGet("getalldepartments")]
         public async Task<Result> GetDepartment()

@@ -97,8 +97,6 @@ namespace HRApplication1.Controllers
 
                 var doesRoleExist = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Name == name.Trim());
 
-
-
                 if (doesRoleExist == null) //role doest not exist in our db
                 {
 
@@ -108,7 +106,6 @@ namespace HRApplication1.Controllers
                     if (result.Succeeded) return Ok("role has been created");
                     else return BadRequest("");
                 }
-
 
                 return Ok("Role already exist");
 
